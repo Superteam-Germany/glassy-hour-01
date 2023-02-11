@@ -6,6 +6,7 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   output: 'server',
+  outDir: 'dist',
   integrations: [svelte(), tailwind(), prefetch()],
   adapter: vercel(),
 });
