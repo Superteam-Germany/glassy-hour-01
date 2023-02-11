@@ -1,0 +1,239 @@
+{
+  "version": "0.1.0",
+  "name": "blog",
+  "constants": [
+    {
+      "name": "USER_PROFILE_TAG",
+      "type": "bytes",
+      "value": "[85, 83, 69, 82, 95, 80, 82, 79, 70, 73, 76, 69, 95, 83, 84, 65, 84, 69]"
+    },
+    {
+      "name": "MAX_TWITTER_HANDLE_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "15"
+    },
+    {
+      "name": "POST_TAG",
+      "type": "bytes",
+      "value": "[80, 79, 83, 84, 95, 83, 84, 65, 84, 69]"
+    },
+    {
+      "name": "MAX_TITLE_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "32"
+    },
+    {
+      "name": "MAX_CONTENT_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "3000"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "initUserProfile",
+      "accounts": [
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "twitterHandle",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "createPost",
+      "accounts": [
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "post",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "content",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deletePost",
+      "accounts": [
+        {
+          "name": "post",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "postCount",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "likePost",
+      "accounts": [
+        {
+          "name": "blogPostAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "post",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "postCount",
+          "type": "u16"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "UserProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "twitterHandle",
+            "type": "string"
+          },
+          {
+            "name": "createdPostsCount",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Post",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "postCount",
+            "type": "u16"
+          },
+          {
+            "name": "likesCount",
+            "type": "u16"
+          },
+          {
+            "name": "createdAt",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TwitterHandleTooLong",
+      "msg": "The Twitter handle is too long. The maximum length is 15 characters."
+    },
+    {
+      "code": 6001,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to perform this action."
+    },
+    {
+      "code": 6002,
+      "name": "TitleTooLong",
+      "msg": "The title is too long. The maximum length is 32 characters."
+    },
+    {
+      "code": 6003,
+      "name": "ContentTooLong",
+      "msg": "The content is too long. The maximum length is 3000 characters."
+    }
+  ],
+  "metadata": {
+    "address": "F76mQ6wUu1sq4zkEuACCAWLD9E6EJd66BfokCzWDwHWo",
+    "origin": "anchor",
+    "binaryVersion": "0.26.0",
+    "libVersion": "0.26.0"
+  }
+}

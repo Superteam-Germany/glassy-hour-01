@@ -1,0 +1,25 @@
+---
+import PostCard from '../components/PostCard.astro';
+import Layout from '../layouts/Layout.astro';
+import { BlogService } from '../ts/blog_service';
+import { connection } from '../ts/constants';
+
+const blogService = new BlogService(connection);
+const feedEntries = await blogService.getFeedEntries();
+---
+
+<Layout title="Welcome to Astro.">
+  <div class="grid-layout">
+    {[...feedEntries].map((entry) => <PostCard entry={entry} />)}
+  </div>
+</Layout>
+
+<style lang="postcss" scoped>
+  .grid-layout {
+    width: 100%;
+    justify-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+    grid-gap: 2rem;
+  }
+</style>

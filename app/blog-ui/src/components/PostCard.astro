@@ -1,0 +1,64 @@
+---
+import type { FeedEntry } from '../ts/types';
+import { bignumToNumber } from '../ts/utils';
+import HeartIcon from './HeartIcon.svelte';
+
+export interface Props {
+  entry: FeedEntry;
+}
+
+const { entry } = Astro.props;
+---
+
+<div
+  class="bouncy-button flex h-56 w-96 flex-col justify-between rounded-xl border-2 border-white/10 bg-surface p-5 shadow-xl shadow-black/20 hover:shadow-black/40"
+>
+  <a href={`/post/${entry.postAddress.toString()}`} rel="prefetch">
+    <div class="flex flex-col space-y-2">
+      <h3 class="truncate font-heading text-xl font-bold">
+        {entry.title}
+      </h3>
+      <p class="break-words text-base text-white/50">
+        {entry.content.slice(0, 100)}...
+      </p>
+    </div>
+
+    <div class="flex flex-col space-y-2">
+      <p class="text-sm text-white/40">
+        {
+          new Date(bignumToNumber(entry.createdAt) * 1000).toLocaleDateString(
+            'en-DE',
+            {
+              weekday: 'short',
+              year: '2-digit',
+              month: '2-digit',
+              day: '2-digit',
+            }
+          )
+        }
+      </p>
+      <div class="h-[1px] w-full rounded-full bg-white/10"></div>
+      <div class="flex flex-row items-center justify-between">
+        <div class="flex w-full flex-col">
+          <p class="text-sm text-white/50">
+            By
+            <a
+              href={`profile/${entry.authority}`}
+              rel="prefetch"
+              class="hover:underline"
+            >
+              @{entry.twitterHandle}
+            </a>
+          </p>
+        </div>
+
+        <div class="flex flex-row items-center justify-center space-x-2">
+          <div class="h-4 w-4 fill-red-500/80">
+            <HeartIcon client:visible />
+          </div>
+          <p class="text-base text-white/50">{entry.likesCount}</p>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>

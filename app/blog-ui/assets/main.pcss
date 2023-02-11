@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;400;500;600;700;800;900&display=swap');
+
+.bouncy-button {
+  transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+  @apply hover:scale-[1.03] focus:scale-[1.03] active:scale-[0.97];
+}
+
+.bouncy-button:disabled {
+  @apply cursor-not-allowed opacity-50 hover:scale-100 active:scale-100;
+}
+
+input {
+  @apply bouncy-button rounded-lg border-2 border-white/10 bg-surface py-2 px-4;
+}
+
+input:focus {
+  @apply border-primary/70;
+  outline: 0;
+}
+
+input::placeholder {
+  @apply text-start text-white/40;
+}
+
+textarea {
+  @apply bouncy-button rounded-lg border-2 border-white/10 bg-surface py-2 px-4;
+}
+
+textarea:focus {
+  @apply border-primary/70;
+  outline: 0;
+}
+
+textarea::placeholder {
+  @apply text-start text-white/40;
+}

@@ -1,0 +1,72 @@
+---
+import { PublicKey } from '@solana/web3.js';
+import Layout from '../../layouts/Layout.astro';
+import type { Post, UserProfile } from '../../ts/sdk/src';
+import { BlogService } from '../../ts/blog_service';
+import TwitterIcon from '../../components/TwitterIcon.astro';
+import LikePost from '../../components/LikePost.svelte';
+import DeletePost from '../../components/DeletePost.svelte';
+import { getTwitterUrl } from '../../ts/utils';
+import { connection } from '../../ts/constants';
+
+export interface Props {
+  address: string;
+}
+
+const { address } = Astro.params;
+const postAddress = Astro.url.href.split('/post/')[1];
+
+let post: Post | undefined;
+let userProfile: UserProfile | undefined;
+
+const blogService = new BlogService(connection);
+
+if (address) {
+  post = await blogService.getPost(new PublicKey(address));
+  userProfile = await blogService.getUserProfile(post.authority);
+}
+---
+
+<Layout title={post?.title ?? ''}>
+  {
+    post && userProfile && (
+      <div class="post-layout">
+        <div class="mb-3 flex h-5 flex-row items-center space-x-2 text-base text-white/90">
+          <a
+            href={getTwitterUrl(userProfile.twitterHandle)}
+            target="_blank"
+            class="mb-1 h-5 w-5 fill-blue-600"
+          >
+            <TwitterIcon />
+          </a>
+          <p>@{userProfile.twitterHandle}</p>
+        </div>
+
+        <h1 class="font-heading mb-10 text-4xl font-bold">{post.title}</h1>
+
+        <p class="text-lg text-white/90">{post.content}</p>
+
+        <div class="bg-surface mt-10 flex w-fit flex-row items-center justify-center rounded-lg border-2 border-white/10 py-3 px-4">
+          <LikePost client:only post={post} postAddress={postAddress} />
+          <DeletePost
+            client:only
+            postAuthor={post.authority.toString()}
+            postAddress={postAddress}
+          />
+        </div>
+      </div>
+    )
+  }
+</Layout>
+
+<style scoped lang="postcss">
+  .post-layout {
+    margin-top: 20px;
+    max-width: 1000px;
+    min-width: 400px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow-wrap: break-word;
+  }
+</style>

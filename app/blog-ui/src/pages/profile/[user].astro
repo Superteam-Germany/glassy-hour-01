@@ -1,0 +1,85 @@
+---
+import { PublicKey } from '@solana/web3.js';
+import Layout from '../../layouts/Layout.astro';
+import { BlogService } from '../../ts/blog_service';
+import { getTwitterUrl, isPubKeyValid } from '../../ts/utils';
+import type { Post, UserProfile } from '../../ts/sdk/src';
+import InitUserProfile from '../../components/InitUserProfile.svelte';
+import CreateBlog from '../../components/CreateBlog.svelte';
+import TwitterIcon from '../../components/TwitterIcon.astro';
+import ProfilePostCard from '../../components/ProfilePostCard.astro';
+import { connection } from '../../ts/constants';
+
+const { user } = Astro.params;
+
+const pubkeyValid = isPubKeyValid(user);
+
+let userProfile: UserProfile | undefined;
+let posts: Post[] = [];
+
+const blogService = new BlogService(connection);
+
+if (pubkeyValid) {
+  userProfile = await blogService.getUserProfile(new PublicKey(user!));
+  posts = await blogService.getPostsByUser(new PublicKey(user!));
+}
+---
+
+<Layout title="Profile">
+  <div>
+    {
+      pubkeyValid ? (
+        userProfile != undefined ? (
+          <div class="flex w-full flex-col items-center space-y-10">
+            <div class="flex flex-row items-center justify-center space-x-3 pl-5">
+              <h2 class="font-heading mb-2 text-3xl font-semibold">
+                @{userProfile.twitterHandle}
+              </h2>
+              <a
+                href={getTwitterUrl(userProfile.twitterHandle)}
+                target="_blank"
+                class="h-5 w-5 fill-blue-600"
+              >
+                <TwitterIcon />
+              </a>
+            </div>
+
+            <div class="flex flex-col items-center justify-center space-y-2">
+              <p class="font-heading text-xl text-white/80">Posts</p>
+              <CreateBlog client:only />
+              <div class="bg-background space-y-4 rounded-xl border-2 border-white/10 p-4">
+                {posts.length > 0 ? (
+                  posts.map((post) => <ProfilePostCard post={post} />)
+                ) : (
+                  <div class="w-96 text-center text-white/80">No posts yet</div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <InitUserProfile client:only />
+        )
+      ) : (
+        <div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center space-y-2">
+          <h2 class="font-heading text-8xl font-bold">404</h2>
+          <p class="text-white/80">
+            User Not Found,
+            <a href="/" class="hover:underline" rel="prefetch">
+              return home
+            </a>
+          </p>
+        </div>
+      )
+    }
+  </div>
+</Layout>
+
+<style scoped lang="postcss">
+  .profile-layout {
+    margin-top: 20px;
+    max-width: 1000px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+</style>

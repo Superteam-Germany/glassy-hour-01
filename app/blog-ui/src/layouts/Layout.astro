@@ -1,0 +1,75 @@
+---
+import AppBar from '../components/AppBar.astro';
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <script>
+      import { Buffer } from 'buffer';
+      globalThis.Buffer = Buffer;
+
+      import {
+        GlowWalletAdapter,
+        BackpackWalletAdapter,
+        SolflareWalletAdapter,
+        PhantomWalletAdapter,
+        BraveWalletAdapter,
+      } from '@solana/wallet-adapter-wallets';
+      import { initWallet } from 'wallet-adapter-x';
+
+      initWallet({
+        autoConnect: true,
+        wallets: [
+          new BackpackWalletAdapter(),
+          new GlowWalletAdapter(),
+          new SolflareWalletAdapter(),
+          new PhantomWalletAdapter(),
+          new BraveWalletAdapter(),
+        ],
+      });
+    </script>
+    <nav>
+      <AppBar />
+    </nav>
+    <main class="flex h-full w-screen flex-col py-28 px-5">
+      <div
+        class="fixed top-0 left-0 z-50 flex h-screen w-screen flex-col items-center justify-center bg-black p-10 min-size:hidden"
+      >
+        <p class="text-center text-xl text-white/80">
+          This website is not optimized for small screens. Please use a device
+          with a larger screen.
+        </p>
+      </div>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  @import '../../assets/main.pcss';
+
+  html {
+    background: linear-gradient(
+      170deg,
+      rgba(21, 1, 236, 0.2) 20%,
+      rgb(5, 5, 5) 50%,
+      rgb(5, 5, 5) 70%
+    );
+    background-repeat: no-repeat;
+    @apply bg-background font-body text-white;
+  }
+</style>

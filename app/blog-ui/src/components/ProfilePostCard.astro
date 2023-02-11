@@ -1,0 +1,52 @@
+---
+import type { Post } from '../ts/sdk/src';
+import { bignumToNumber, getPostPDA } from '../ts/utils';
+import HeartIcon from './HeartIcon.svelte';
+
+export interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+
+const postAddress = getPostPDA(post.postCount, post.authority);
+---
+
+<a
+  href={`/post/${postAddress.toString()}`}
+  rel="prefetch"
+  class="bouncy-button flex w-96 flex-col space-y-3 rounded-lg border-2 border-white/10 bg-surface p-4"
+>
+  <div class="flex flex-col space-y-2">
+    <p class="truncate font-heading text-lg font-bold">
+      {post.title}
+    </p>
+    <p class="w-[80%] truncate text-sm text-white/70">
+      {post.content.repeat(100).slice(0, 100)}
+    </p>
+  </div>
+
+  <div class="h-[0.5px] w-full bg-white/20"></div>
+
+  <div class="flex w-full flex-row items-center justify-between">
+    <p class="text-sm text-white/40">
+      {
+        new Date(bignumToNumber(post.createdAt) * 1000).toLocaleDateString(
+          'en-DE',
+          {
+            weekday: 'short',
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit',
+          }
+        )
+      }
+    </p>
+
+    <div class="flex flex-row items-center space-x-2">
+      <div class="h-3.5 w-3.5 fill-red-800">
+        <HeartIcon />
+      </div>
+      <p class="text-sm text-white/40">{post.likesCount}</p>
+    </div>
+  </div>
+</a>

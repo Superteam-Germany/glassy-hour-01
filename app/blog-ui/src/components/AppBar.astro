@@ -1,0 +1,19 @@
+---
+import ConnectWalletButton from './ConnectWalletButton.svelte';
+import ProfileButton from './ProfileButton.svelte';
+---
+
+<div
+  class="fixed z-30 flex w-screen flex-row justify-between bg-background/40 p-6 shadow-sm shadow-black/20 backdrop-blur-lg"
+>
+  <a
+    href="/"
+    rel="prefetch"
+    class="font-heading text-2xl font-semibold hover:underline">🏠 Blog.sol</a
+  >
+  <div class="absolute right-6 top-4 flex flex-row">
+    <!-- <CreateBlog client:load /> -->
+    <ConnectWalletButton client:load />
+    <ProfileButton client:only />
+  </div>
+</div>
