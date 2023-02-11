@@ -1,9 +1,6 @@
-import { Connection } from '@solana/web3.js';
+import { Connection, clusterApiUrl } from '@solana/web3.js';
 
-export const connection = new Connection(
-  'https://snowy-icy-model.solana-devnet.quiknode.pro/db62b4a4a78d544eadd831d1b861d664a69ae051/',
-  'processed'
-);
+export const connection = new Connection(clusterApiUrl('devnet'), 'processed');
 
 export const POST_TAG = Buffer.from('POST_STATE');
 export const USER_PROFILE_TAG = Buffer.from('USER_PROFILE_STATE');
